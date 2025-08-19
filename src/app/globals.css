@@ -15,6 +15,8 @@
 body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  background: #F3F5F8;
+  color: #0E121B;
 }
 
 img, picture, video, canvas, svg {
@@ -40,4 +42,10 @@ h1, h2, h3, h4, h5, h6 {
 
 #root, #__next {
   isolation: isolate;
+}
+a {
+  text-decoration: none;
+}
+button {
+  cursor: pointer;
 }
