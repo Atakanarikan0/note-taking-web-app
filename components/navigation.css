@@ -15,3 +15,8 @@
     border: none;
   }
 }
+.navigation-container img.active {
+  background-color: #EBF1FF;
+  border-radius: 8px; 
+  padding: 4px 22px; 
+}

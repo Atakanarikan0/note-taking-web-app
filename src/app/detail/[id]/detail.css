@@ -1,7 +1,8 @@
-.create-container {
+.detail-container {
   padding: 20px 16px;
   background: #FFF;
-  border-radius: 8px 8px 0 0;
+  height: 100vh;
+  border-radius: 12px 12px 0 0;
 }
 
 .action-bar {
@@ -19,6 +20,10 @@
     background: inherit;
     border: none;
 
+    >img {
+      width: 18px;
+      height: 18px;
+    }
   }
 
   button:last-child {
@@ -26,7 +31,7 @@
   }
 
   .go-back {
-    background-image: url(../../../public/img/left-icon.svg);
+    background-image: url(../../../../public/img/left-icon.svg);
     background-position: left;
     padding-left: 15px;
     background-repeat: no-repeat;
@@ -38,7 +43,6 @@
     color: #525866;
   }
 }
-
 .note-input {
   display: flex;
   align-items: center;
@@ -110,3 +114,62 @@ form {
   background-color: white;
   font-size: 14px;
 }
+dialog {
+  padding: 20px;
+  margin: auto;
+  border: none;
+  border-radius: 6px;
+}
+
+dialog::backdrop {
+  background-color: rgba(14, 18, 27, 0.5);
+}
+
+dialog h3 {
+  color: rgba(14, 18, 27, 1);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 19.2px;
+  letter-spacing: -0.30000001192092896px;
+  margin-bottom: 6px;
+}
+
+dialog p {
+  color: rgba(43, 48, 59, 1);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18.2px;
+  letter-spacing: -0.20000000298023224px;
+  margin-bottom: 37px;
+}
+
+.modal-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.modal-buttons button:nth-child(1) {
+  background-color: rgba(243, 245, 248, 1);
+  color: rgba(82, 88, 102, 1);
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16.8px;
+  letter-spacing: -0.20000000298023224px;
+}
+
+.modal-buttons button:nth-child(2) {
+  background-color: rgba(251, 55, 72, 1);
+  color: rgba(243, 245, 248, 1);
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16.8px;
+  letter-spacing: -0.20000000298023224px;
+} 

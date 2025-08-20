@@ -1,0 +1,33 @@
+.archive-container {
+  background: #FFF;
+  height: 100vh;
+  padding: 20px 16px;
+  border-radius: 12px 12px 0 0;
+
+  h2 {
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 24px;
+    line-height: 120%;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 130%;
+    letter-spacing: -0.2px;
+    margin-bottom: 16px;
+    color: #2B303B;
+
+  }
+}
+.notes-list {
+  p {
+    border: 1px solid #E0E4EA;
+    background: #F3F5F8;
+    padding: 8px;
+    border-radius: 8px;
+  }
+}

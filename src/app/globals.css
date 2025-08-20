@@ -43,6 +43,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 a {
   text-decoration: none;
+  color: #0E121B;
+
 }
 button {
   cursor: pointer;
@@ -78,7 +80,6 @@ li {
     background: #F3F5F8;
     padding: 8px;
     border-radius: 8px;
-
   }
 }
 .notes-item {
@@ -121,17 +122,7 @@ hr {
   border: none;
   background-color: #E0E4EA;
 }
-.new-note-button {
-  background: #335CFF;
-  border: none;
-  border-radius: 50%;
-  box-shadow: 0px 7px 11px 0px #CACFD8B2;
-  padding: 15px;
-  position: fixed;
-  bottom: 72px;
-  right: 16px;
 
-}
 input {
   outline: none;
 }

@@ -5,6 +5,7 @@ import Header from "@/components/header"
 import Navigation from "@/components/navigation"
 import Link from "next/link";
 import { NotesContext } from "./context/note";
+import CreateNoteButton from "@/components/createButton";
 
 const supabase = createClient()
 
@@ -31,7 +32,6 @@ export default function Home() {
       console.log("Notes tablosu boş veya hata:", notesError);
     }
   }
-  console.log(notes.map(note => note.tags));
   useEffect(() => {
     getData()
   }, [])
@@ -48,29 +48,30 @@ export default function Home() {
             (notes.map(note =>
               <Fragment key={note.id}>
                 <li className="notes-item" >
-                  <h6>{note.title}</h6>
-                  <div className="tags">
-                    {note.tags.map((tag, index) => (
-                      <span key={index}>{tag}</span>
-                    ))}
-                  </div>
+                  <Link href={`/detail/${note.id}`}>
+                    <h6>{note.title}</h6>
+                    <div className="tags">
+                      {note.tags.map((tag, index) => (
+                        <span key={index}>{tag}</span>
+                      ))}
+                    </div>
 
-                  <span>
-                    {new Date(note.created_at).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </span>
+                    <span>
+                      {new Date(note.created_at).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </span>
+                  </Link>
                 </li>
                 <hr />
               </Fragment>
             ))
           }
-
+          <CreateNoteButton />
         </ul>
       </div>
-      <Link href="/create-note" className="new-note-button"><img src="/img/vector-icon.svg" alt="New Note" /></Link>
       <Navigation />
     </div>
 

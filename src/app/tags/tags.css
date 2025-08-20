@@ -1,0 +1,41 @@
+.tags-container {
+  padding: 20px 16px;
+  background: #FFF;
+  height: 100vh;
+  border-radius: 12px 12px 0 0;
+
+  h2 {
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 24px;
+    line-height: 120%;
+    letter-spacing: -0.5px;
+  }
+}
+.tags-list {
+  margin-top: 16px;
+}
+.tags-item {
+  padding: 11px 0 ;
+  border-bottom: 1px solid #E0E4EA;
+
+}
+.tags-item  a {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 120%;
+  letter-spacing: -0.2px;
+  color: #2B303B;
+
+
+  >div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    img {
+      width: 20px;
+      height: 20px;
+    }
+
+  }
+}
