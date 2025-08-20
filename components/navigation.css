@@ -1,0 +1,17 @@
+.navigation-container {
+  position: fixed;
+  bottom: 0;
+  border-top: 1px solid #E0E4EA;
+  background: #FFF;
+  padding: 16px 38px;
+  width: 100%;
+  box-shadow: 0px -4px 6px 0px #F0F0F099;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 29px;
+  button {
+    background: inherit;
+    border: none;
+  }
+}

@@ -1,10 +1,10 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
+import NotesProvider, { NotesContext } from "./context/note";
 
 const inter = Inter({
   subsets: ["latin"],
 });
-
 
 export const metadata = {
   title: "Note Taking Web App",
@@ -15,7 +15,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}
+        <NotesProvider>
+          {children}
+        </NotesProvider>
       </body>
     </html>
   );
