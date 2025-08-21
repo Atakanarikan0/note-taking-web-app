@@ -5,7 +5,7 @@
   height: 100vh;         
   padding-block: 10px;
 }
-.login-container {
+.login-container { 
   width: 343px;
   padding: 40px 16px;
   margin: auto;
@@ -34,7 +34,6 @@
     letter-spacing: -0.2px;
     text-align: center;
     color: #525866;
-    margin-bottom: 16px;
 
   }
   >button {
@@ -48,6 +47,9 @@
     border-radius: 8px;
     border: 1px solid #CACFD8;
     margin-bottom: 16px;
+    &:hover {
+      background: #F5F7FA;
+    }
     h3 {
       font-weight: 500;
       font-style: Medium;
@@ -80,6 +82,9 @@
     margin-top: 16px;
     a {
       color: #0E121B;
+      &:hover {
+        color: #335CFF;
+      }
     }
 
   }
@@ -102,11 +107,13 @@
     padding: 12px 16px;
     width: 100%;
     font-weight: 400;
-    font-style: Regular;
     font-size: 14px;
     line-height: 130%;
     letter-spacing: -0.2px;
     margin-bottom: 16px;
+  }
+  input:hover {
+    background: #F5F7FA;
   }
   button {
     background: #335CFF;
@@ -115,6 +122,17 @@
     width: 100%;
     padding-block: 10px;
     border: 0;
+    &:hover {
+      background: #2547D0;
+      
+    }
+  }
+  > p {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 140%;
+    color: #FB3748;
+    margin-bottom: 8px;
   }
 }
 .forgot-password {
@@ -132,6 +150,9 @@
     text-decoration-style: solid;
     text-decoration-thickness: 0%;
     color: #525866;
+    &:hover {
+      color: #335CFF;
+    }
   }
 }
 .password-wrapper {

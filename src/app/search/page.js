@@ -5,6 +5,7 @@ import { Fragment, useContext, useState } from "react";
 import { NotesContext } from "../context/note";
 import "./search.css"
 import CreateNoteButton from "@/components/createButton";
+import Link from "next/link";
 
 export default function Search() {
   const { notes } = useContext(NotesContext);
@@ -27,27 +28,29 @@ export default function Search() {
             :
             (notes
               .filter(note => note.title.toLowerCase().includes(searchWord.toLowerCase()))
-              .map(note => 
+              .map(note =>
                 <Fragment key={note.id}>
                   <li className="notes-item" >
-                    <h6>{note.title}</h6>
-                    <div className="tags">
-                      {note.tags.map((tag, index) => (
-                        <span key={index}>{tag}</span>
-                      ))}
-                    </div>
+                    <Link href={`/detail/${note.id}`}>
+                      <h6>{note.title}</h6>
+                      <div className="tags">
+                        {note.tags.map((tag, index) => (
+                          <span key={index}>{tag}</span>
+                        ))}
+                      </div>
 
-                    <span>
-                      {new Date(note.created_at).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </span>
+                      <span>
+                        {new Date(note.created_at).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </Link>
                   </li>
                   <hr />
                 </Fragment>
-              
+
               ))
           }
           <CreateNoteButton />

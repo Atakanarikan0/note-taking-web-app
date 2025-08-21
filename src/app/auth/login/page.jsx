@@ -8,15 +8,14 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [status, formData, pending] = useActionState(login, {error: null , success: false });
 
-  console.log(status.error);
   return (
     <div className="login-page">
       <div className="login-container">
         <img src="/img/logo-light-mode.png" alt="logo" />
         <h1>Welcome to Note</h1>
         <h4>Please log in to continue</h4>
-        {status.error ?? <p>{status.error}</p>}
         <form className="login-form" action={formData}>
+          <p style={status.error ? { display: "block" } : { display: "none"}}>We're sorry, your email or password was incorrect. Plase check </p>
           <label>Email Address</label>
           <input type="email" name="email" placeholder="email@example.com" required />
           <div className="forgot-password">

@@ -1,0 +1,67 @@
+.font-container {
+  padding: 24px 16px;
+  background: #FFF;
+  height: 100vh;
+  border-radius: 12px 12px 0 0;
+
+  h2 {
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 24px;
+    line-height: 120%;
+    letter-spacing: -0.5px;
+    margin-top: 12px;
+    margin-bottom: 8px;
+  }
+
+  a {
+    background-image: url(../../../../public/img/left-icon.svg);
+    background-position: left;
+    padding-left: 15px;
+    background-repeat: no-repeat;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 130%;
+    letter-spacing: -0.2px;
+    color: #525866;
+  }
+  p {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 130%;
+    letter-spacing: -0.2px;
+    color: #2B303B;
+  }
+}
+.font-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #E0E4EA;
+  border-radius: 12px;
+  div {
+    margin-right: auto;
+  }
+  h6 {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 120%;
+    letter-spacing: -0.2px;
+  }
+  span {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 120%;
+    letter-spacing: -0.2px;
+    color: #2B303B;
+  }
+  
+  >img {
+    border: 1px solid #E0E4EA;
+    padding: 8px;
+    border-radius: 12px;
+    background: #FFF;
+  }
+}

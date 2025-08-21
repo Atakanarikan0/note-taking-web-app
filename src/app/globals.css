@@ -126,3 +126,103 @@ hr {
 input {
   outline: none;
 }
+
+.dark{
+  background: #232530;
+  .header-section {
+    background: #232530;
+  }
+  .notes-section, .search-section, .archive-container, .tags-container, .settings-container, .theme-container, .detail-container, .font-container, .password-container, .selected-tag-container {
+    background: #0E121B;
+  }
+  .notes-section p {
+    color: #FFF;
+    background: #232530;
+    border-color: #2B303B;
+  }
+  .selected-tag-container  {
+    .go-back {
+      color: #FFF;
+    }
+    p {
+      color: #CACFD8;
+    }
+  }
+
+  .tags-item {
+    border-bottom-color: #232530;
+    a {
+      color: #CACFD8;
+    }
+  }
+  .settings-list {
+    border-bottom-color: #232530;
+  }
+  .archive-container p {
+    color: #E0E4EA;
+  }
+  .theme-container a, .theme-container p, .font-container a, .font-container p, .password-container a, .password-container p    {
+    color: #CACFD8;
+  }
+  .theme-item, .font-item {
+    border-color: #232530;
+    >img {
+      border-color: #2B303B;
+      background: #353c4d;
+    }
+    span {
+      color: #CACFD8;
+    }
+  }
+  .action-bar {
+    border-color: #232530;
+  }
+  .action-bar .go-back, .action-bar button {
+    color: #CACFD8;
+  }
+  input, textarea {
+    background: inherit;
+    color: #FFF;
+  }
+  .note-input h6 {
+    color: #CACFD8;
+  }
+  .note-input:last-child input {
+    background: #0E121B;
+    color: #CACFD8;
+  }
+  h2, h6 {
+    color: #FFF;
+  }
+  hr {
+    background: #232530;
+  }
+  .notes-item span {
+    color: #CACFD8;
+  }
+  .notes-item .tags span {
+    background: #525866;
+  }
+  .navigation-container {
+    box-shadow: 0px -5px 6px 0px #00000080;
+border-top: 1px solid #232530;
+background: #0E121B;
+  }
+  .new-note-button {
+    box-shadow: 0px 7px 11px 0px #000000B2;
+
+  }
+  .active {
+    background: #2B303B !important;
+  }
+  .search-input {
+    border: 1px solid #525866;
+    box-shadow: 0px 1px 2px 0px #0A0D1408;
+    background:#0E121B url(/img/search-icon-light.svg) 16px 50% no-repeat;;
+    color: #FFF;
+  }
+  p {
+    color: #CACFD8;
+  }
+
+}
