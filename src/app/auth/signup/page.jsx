@@ -13,7 +13,7 @@ export default function Signup() {
       <div className="signup-container">
         <img src="/img/logo-light-mode.png" alt="logo" />
         <h1>Create Your Account</h1>
-        <h4>Sign up to start organizing your notes and boost <br /> your productivity.</h4>
+        <h4>Sign up to start organizing your notes and boost your productivity.</h4>
         <form className="signup-form" >
           <label>Email Address</label>
           <input type="email" name="email" placeholder="email@example.com" required />

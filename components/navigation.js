@@ -8,40 +8,46 @@ export default function Navigation() {
 
   return (
     <div className="navigation-container">
-      <Link href="/">
+      <Link href="/" className={pathname === "/" ? "active" : ""}>
         <img 
           src="/img/home-icon-light.svg" 
           alt="Main" 
-          className={pathname === "/" ? "active" : ""}
         />
+        <span>Home</span>
+
       </Link>
-      <Link href="/search">
+      <hr />
+      <Link href="/search" className={pathname === "/search" ? "active" : ""}>
         <img 
           src="/img/search-icon-light.svg" 
           alt="Search" 
-          className={pathname === "/search" ? "active" : ""}
         />
+        <span>Search</span>
+
       </Link>
-      <Link href="/archived">
+      <hr />
+      <Link href="/archived" className={pathname === "/archived" ? "active" : ""}>
         <img 
           src="/img/archive-icon-light.svg" 
           alt="Archive" 
-          className={pathname === "/archived" ? "active" : ""}
         />
+        <span>Archived</span>
       </Link>
-      <Link href="/tags">
+      <hr />
+      <Link href="/tags" className={pathname === "/tags" ? "active" : ""}>
         <img 
           src="/img/tag-icon-light.svg" 
-          alt="Tag" 
-          className={pathname === "/tags" ? "active" : ""}
+          alt="Tag"  
         />
+        <span>Tags</span>
       </Link>
-      <Link href="/settings">
+      <hr />
+      <Link href="/settings" className={pathname === "/settings" ? "active" : ""}>
         <img 
           src="/img/setting-icon-light.svg" 
-          alt="Setting" 
-          className={pathname === "/settings" ? "active" : ""}
+          alt="Setting"      
         />
+        <span>Settings</span>
       </Link>
     </div>
   )

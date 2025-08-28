@@ -7,5 +7,10 @@
   position: fixed;
   bottom: 72px;
   right: 16px;
-
 }
+ @media (min-width: 426px) {
+  .new-note-button {
+    padding: 23px;
+    bottom: 100px;
+  }
+ }

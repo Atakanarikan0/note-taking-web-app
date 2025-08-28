@@ -65,7 +65,6 @@ li {
   border-radius: 8px 8px 0 0;
   h2 {
     font-weight: 700;
-    font-style: Bold;
     font-size: 24px;
     line-height: 120%;
     letter-spacing: -0.5px;
@@ -87,7 +86,6 @@ li {
   margin-bottom: 4px;
   h6 {
     font-weight: 600;
-    font-style: Semi Bold;
     font-size: 16px;
     line-height: 120%;
     letter-spacing: -0.3px;
@@ -140,7 +138,7 @@ input {
     background: #232530;
     border-color: #2B303B;
   }
-  .selected-tag-container  {
+  .selected-tag-container {
     .go-back {
       color: #FFF;
     }
@@ -148,7 +146,6 @@ input {
       color: #CACFD8;
     }
   }
-
   .tags-item {
     border-bottom-color: #232530;
     a {
@@ -225,4 +222,11 @@ background: #0E121B;
     color: #CACFD8;
   }
 
+}
+
+@media (min-width: 426px) {
+  .notes-section {
+    padding: 24px 32px;
+    border-radius: 16px 16px 0 0 ;
+  }
 }

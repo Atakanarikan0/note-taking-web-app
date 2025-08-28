@@ -2,3 +2,8 @@
   padding: 13px 16px;
   background: #F3F5F8;
 }
+@media (min-width: 426px) {
+  .header-section {
+    padding: 23px 32px;
+  }
+}

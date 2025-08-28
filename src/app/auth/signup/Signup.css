@@ -6,7 +6,8 @@
   padding-block: 10px;
 }
 .signup-container {
-  width: 343px;
+  max-width: 343px;
+  width: 100%;
   padding: 40px 16px;
   margin: auto;
   border-radius: 12px;
@@ -113,5 +114,10 @@
     width: 100%;
     padding-block: 10px;
     border: 0;
+  }
+}
+@media(min-width: 426px) {
+  .signup-container {
+    max-width: 522px;
   }
 }
