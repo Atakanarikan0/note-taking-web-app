@@ -120,4 +120,8 @@
   .signup-container {
     max-width: 522px;
   }
+}@media(min-width: 769px) {
+  .signup-container {
+    max-width: 540px;
+  }
 }

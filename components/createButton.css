@@ -14,3 +14,12 @@
     bottom: 100px;
   }
  }
+  @media (min-width: 426px) {
+    .desktp-new-button {
+      background: #335CFF;
+      color: #FFF;
+      border: none;
+     padding-block: 12px;
+     border-radius: 8px;
+  }
+ }

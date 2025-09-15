@@ -9,7 +9,7 @@ import Link from "next/link";
 import CreateNoteButton from "@/components/createButton";
 
 export default function Tag() {
-  const { notes } = useContext(NotesContext);
+  const { notes, screenSize } = useContext(NotesContext);
   const [searchTags, setSearchTags] = useState([]);
 
   useEffect(() => {
@@ -25,29 +25,53 @@ export default function Tag() {
   }, [notes])
   return (
     <>
-      <Header />
-      <div className="tags-container">
-        <h2>Tags</h2>
-        <ul className="tags-list">
-          {searchTags.map(tag => (
-            <li key={tag} className="tags-item">
-              <Link href={`/tags/${tag}`}>
-                <div>
-                  <img src="/img/tag-icon-light.svg" alt="tag icon" />
-                  <div className="tag-name">
-                    <h6>{tag}</h6>
+      {screenSize ?
+        <div className="tags-container">
+          <h2>Tags</h2>
+          <ul className="tags-list">
+            {searchTags.map(tag => (
+              <li key={tag} className="tags-item">
+                <Link href={`/tags/${tag}`}>
+                  <div>
+                    <img src="/img/tag-icon-light.svg" alt="tag icon" />
+                    <div className="tag-name">
+                      <h6>{tag}</h6>
+                    </div>
                   </div>
-                </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        :
+        <>
+          <Header />
+          <div className="tags-container">
+            <h2>Tags</h2>
+            <ul className="tags-list">
+              {searchTags.map(tag => (
+                <li key={tag} className="tags-item">
+                  <Link href={`/tags/${tag}`}>
+                    <div>
+                      <img src="/img/tag-icon-light.svg" alt="tag icon" />
+                      <div className="tag-name">
+                        <h6>{tag}</h6>
+                      </div>
+                    </div>
 
-              </Link>
-            </li>
+                  </Link>
+                </li>
 
-          ))}
-          <CreateNoteButton />
-        </ul>
+              ))}
+              <CreateNoteButton />
+            </ul>
 
-      </div>
-      <Navigation />
+          </div>
+          <Navigation />
+        </>
+
+
+      }
     </>
   )
 }

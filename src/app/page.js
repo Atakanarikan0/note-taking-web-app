@@ -2,15 +2,17 @@
 import { Fragment, useContext, useEffect, useState } from "react";
 import { createClient } from "./utils/supabase/client";
 import Header from "@/components/header"
+import Tags from "@/src/app/tags/page"
 import Navigation from "@/components/navigation"
 import Link from "next/link";
 import { NotesContext } from "./context/note";
 import CreateNoteButton from "@/components/createButton";
+import Tag from "@/src/app/tags/page";
 
 const supabase = createClient()
 
 export default function Home() {
-  const { notes, setNotes } = useContext(NotesContext);
+  const { notes, setNotes, screenSize } = useContext(NotesContext);
 
   async function getData() {
     const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -37,46 +39,68 @@ export default function Home() {
   }, [])
   return (
     <div className="container">
-      <Header />
-      <div className="notes-section">
-        <h2>All Notes</h2>
-        <ul className="notes-list">
-          {notes.length === 0
-            ?
-            <p>You don’t have any notes yet. Start a new note to capture your thoughts and ideas.</p>
-            :
-            (notes.map(note =>
-              <Fragment key={note.id}>
-                <li className="notes-item" >
-                  <Link href={`/detail/${note.id}`}>
-                    <h6>{note.title}</h6>
-                    <div className="tags">
-                      {note.tags.map((tag, index) => (
-                        <span key={index}>{tag}</span>
-                      ))}
-                    </div>
-
-                    <span>
-                      {new Date(note.created_at).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </span>
-                  </Link>
-                </li>
-                <hr />
-              </Fragment>
-            ))
-          }
+      {screenSize ?
+      <>
+        <div className="header-container">
+          <Header />
+          <Navigation />
+          <Tags />
+        </div>
+        <div className="header-bar">
+          <h2>All Notes</h2>
+          <input type="text" placeholder="Search by title, content, or tags…" />
+          <button><img src="/img/setting-icon-light.svg" alt="Search" /></button>
+        </div>
+        <div className="notes">
           <CreateNoteButton />
-        </ul>
-      </div>
-      <Navigation />
+        </div>
+        <div className="note-detail">
+          <h4>Note detail</h4>
+        </div>
+        <div className="btn-column">
+          <h4>delte btn</h4>
+        </div>
+      </>
+      :
+        <>
+          <Header />
+          <div className="notes-section">
+            <h2>All Notes</h2>
+            <ul className="notes-list">
+              {notes.length === 0
+                ?
+                <p>You don’t have any notes yet. Start a new note to capture your thoughts and ideas.</p>
+                :
+                (notes.map(note =>
+                  <Fragment key={note.id}>
+                    <li className="notes-item" >
+                      <Link href={`/detail/${note.id}`}>
+                        <h6>{note.title}</h6>
+                        <div className="tags">
+                          {note.tags.map((tag, index) => (
+                            <span key={index}>{tag}</span>
+                          ))}
+                        </div>
+
+                        <span>
+                          {new Date(note.created_at).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </span>
+                      </Link>
+                    </li>
+                    <hr />
+                  </Fragment>
+                ))
+              }
+              <CreateNoteButton />
+            </ul>
+          </div>
+          <Navigation />
+        </>
+      }
     </div>
-
-
   )
-
-
 }
