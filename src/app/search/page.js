@@ -50,7 +50,6 @@ export default function Search() {
                   </li>
                   <hr />
                 </Fragment>
-
               ))
           }
           <CreateNoteButton />

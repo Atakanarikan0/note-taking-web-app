@@ -8,11 +8,14 @@ import Link from "next/link";
 import { NotesContext } from "./context/note";
 import CreateNoteButton from "@/components/createButton";
 import Tag from "@/src/app/tags/page";
+import NoteDetail from "./detail/[id]/noteDetail";
 
 const supabase = createClient()
 
 export default function Home() {
   const { notes, setNotes, screenSize } = useContext(NotesContext);
+  const [selectedNote, setSelectedNote] = useState([]);
+  const [searchWord, setSearchWord] = useState("");
 
   async function getData() {
     const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -37,31 +40,64 @@ export default function Home() {
   useEffect(() => {
     getData()
   }, [])
+
+  function handleClick(id) {
+    setSelectedNote(notes.find(x => x.id === id));
+  }
+  console.log();
   return (
     <div className="container">
       {screenSize ?
-      <>
-        <div className="header-container">
-          <Header />
-          <Navigation />
-          <Tags />
-        </div>
-        <div className="header-bar">
-          <h2>All Notes</h2>
-          <input type="text" placeholder="Search by title, content, or tags…" />
-          <button><img src="/img/setting-icon-light.svg" alt="Search" /></button>
-        </div>
-        <div className="notes">
-          <CreateNoteButton />
-        </div>
-        <div className="note-detail">
-          <h4>Note detail</h4>
-        </div>
-        <div className="btn-column">
-          <h4>delte btn</h4>
-        </div>
-      </>
-      :
+        <>
+          <div className="header-container">
+            <Header />
+            <Navigation />
+            <Tags />
+          </div>
+          <div className="header-bar">
+            <h2>All Notes</h2>
+            <input type="text" placeholder="Search by title ..." value={searchWord || ""} onChange={e => setSearchWord(e.target.value)} />
+            <button><img src="/img/setting-icon-light.svg" alt="Search" /></button>
+          </div>
+          <div className="notes">
+            <CreateNoteButton />
+            <ul className="notes-list">
+              {notes.length === 0
+                ?
+                <p>You don’t have any notes yet. Start a new note to capture your thoughts and ideas.</p>
+                :
+                (notes
+                  .filter(note => note.title.toLowerCase().includes(searchWord.toLowerCase()))
+                  .map(note =>
+                    <Fragment key={note.id}>
+                        <li className="notes-item" onClick={() => handleClick(note.id)} >
+                          <h6>{note.title}</h6>
+                          <div className="tags">
+                            {note.tags.map((tag, index) => (
+                              <span key={index}>{tag}</span>
+                            ))}
+                          </div>
+
+                          <span>
+                            {new Date(note.created_at).toLocaleDateString("en-GB", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            })}
+                          </span>
+                        </li>
+                        <hr />
+                    </Fragment>
+                  ))
+              }
+            </ul>
+          </div>
+          <div className="note-detail">
+            <NoteDetail noteId={selectedNote.id} />
+          </div>
+
+        </>
+        :
         <>
           <Header />
           <div className="notes-section">

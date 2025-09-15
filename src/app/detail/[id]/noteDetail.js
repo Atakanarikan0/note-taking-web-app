@@ -10,7 +10,7 @@ import { redirect } from "next/navigation";
 
 
 export default function NoteDetail({ noteId }) {
-  const { notes } = useContext(NotesContext);
+  const { notes, screenSize } = useContext(NotesContext);
   const [editTitle, setEditTitle] = useState("")
   const [editBody, setEditBody] = useState("")
   const deleteRef = useRef(null);
@@ -73,54 +73,113 @@ export default function NoteDetail({ noteId }) {
   }
   return (
     <>
-      <Header />
-      <div className="detail-container">
-        <form onSubmit={handleEdit}>
-          <div className="action-bar">
-            <Link href="/" className="go-back">Go Back</Link>
-            <button type="button" onClick={() => deleteRef.current.showModal()}><img src="/img/delete-icon.svg" alt="Delete" /></button>
-            <button type="button" onClick={() => archiveRef.current.showModal()}><img src="/img/archive-icon-light.svg" alt="Archive" /></button>
-            <button type="button" onClick={handleCancel}>Cancel</button>
-            <button type="submit">Save Note</button>
-          </div>
-          <input type="text" name="title" value={editTitle} onChange={(e) => setEditTitle(e.target.value)}></input>
-          <div>
-            <div className="note-input">
-              <img src="/img/tag-icon-light.svg" alt="tag icon" />
-              <h6 className="h6">Tags</h6>
-              <input type="text" name='tags' readOnly defaultValue={note?.tags} />
+
+      {screenSize ?
+        <>
+          <div className="detail-container">
+            <form onSubmit={handleEdit}>
+              <input type="text" name="title" value={editTitle} onChange={(e) => setEditTitle(e.target.value)}></input>
+              <div>
+                <div className="note-input">
+                  <img src="/img/tag-icon-light.svg" alt="tag icon" />
+                  <h6 className="h6">Tags</h6>
+                  <input type="text" name='tags' readOnly defaultValue={note?.tags} />
+                </div>
+                <div className="note-input">
+                  <img src="/img/clock-icon.svg" alt="clock icon" />
+                  <h6 className="h6">Last edited</h6>
+                  <input type="text" name='created_at' value={new Date(note.created_at).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })} readOnly />
+                </div>
+              </div>
+              <hr />
+              <textarea name="body"
+                value={editBody}
+                onChange={(e) => setEditBody(e.target.value)}
+              ></textarea>
+              <div className="btn-group">
+                <button type="submit">Save Note</button>
+                <button onClick={handleCancel}>Cancel</button>
+              </div>
+            </form>
+            <div className="dlt-arch-btns">
+              <button type="button" onClick={() => deleteRef.current.showModal()}><img src="/img/delete-icon.svg" alt="Delete" />Delete Note</button>
+              <button type="button" onClick={() => archiveRef.current.showModal()}><img src="/img/archive-icon-light.svg" alt="Archive" />Archive Note</button>
             </div>
-            <div className="note-input">
-              <img src="/img/clock-icon.svg" alt="clock icon" />
-              <h6 className="h6">Last edited</h6>
-              <input type="text" name='created_at' value={new Date(note.created_at).toLocaleDateString("en-GB", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-              })} readOnly />
-            </div>
           </div>
-          <hr />
-          <textarea name="body" value={editBody} onChange={(e) => setEditBody(e.target.value)}></textarea>
-        </form>
-      </div>
-      <Navigation />
-      <dialog ref={deleteRef}>
-        <h3>Delete Note</h3>
-        <p>Are you sure you want to permanently delete this note? This action cannot be undone.</p>
-        <div className="modal-buttons">
-          <button onClick={() => deleteRef.current.close()}>Cancel</button>
-          <button onClick={() => handleDelete(note.id)}>Delete Note</button>
-        </div>
-      </dialog>
-      <dialog ref={archiveRef}>
-        <h3>Archive Note</h3>
-        <p>Are you sure you want to archive this note? You can find it in the Archived Notes section and restore it anytime.</p>
-        <div className="modal-buttons">
-          <button onClick={() => archiveRef.current.close()}>Cancel</button>
-          <button onClick={() => handleArchive(note.id)} style={{ background: "rgba(51, 92, 255, 1)" }} className="archive-modal-button">Archive Notes</button>
-        </div>
-      </dialog>
+          <dialog ref={deleteRef}>
+            <h3>Delete Note</h3>
+            <p>Are you sure you want to permanently delete this note? This action cannot be undone.</p>
+            <div className="modal-buttons">
+              <button onClick={() => deleteRef.current.close()}>Cancel</button>
+              <button onClick={() => handleDelete(note.id)}>Delete Note</button>
+            </div>
+          </dialog>
+          <dialog ref={archiveRef}>
+            <h3>Archive Note</h3>
+            <p>Are you sure you want to archive this note? You can find it in the Archived Notes section and restore it anytime.</p>
+            <div className="modal-buttons">
+              <button onClick={() => archiveRef.current.close()}>Cancel</button>
+              <button onClick={() => handleArchive(note.id)} style={{ background: "rgba(51, 92, 255, 1)" }} className="archive-modal-button">Archive Notes</button>
+            </div>
+          </dialog>
+        </>
+
+        :
+        <>
+          <Header />
+          <div className="detail-container">
+            <form onSubmit={handleEdit}>
+              <div className="action-bar">
+                <Link href="/" className="go-back">Go Back</Link>
+                <button type="button" onClick={() => deleteRef.current.showModal()}><img src="/img/delete-icon.svg" alt="Delete" /></button>
+                <button type="button" onClick={() => archiveRef.current.showModal()}><img src="/img/archive-icon-light.svg" alt="Archive" /></button>
+                <button type="button" onClick={handleCancel}>Cancel</button>
+                <button type="submit">Save Note</button>
+              </div>
+              <input type="text" name="title" value={editTitle} onChange={(e) => setEditTitle(e.target.value)}></input>
+              <div>
+                <div className="note-input">
+                  <img src="/img/tag-icon-light.svg" alt="tag icon" />
+                  <h6 className="h6">Tags</h6>
+                  <input type="text" name='tags' readOnly defaultValue={note?.tags} />
+                </div>
+                <div className="note-input">
+                  <img src="/img/clock-icon.svg" alt="clock icon" />
+                  <h6 className="h6">Last edited</h6>
+                  <input type="text" name='created_at' value={new Date(note.created_at).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })} readOnly />
+                </div>
+              </div>
+              <hr />
+              <textarea name="body" value={editBody} onChange={(e) => setEditBody(e.target.value)}></textarea>
+            </form>
+          </div>
+          <Navigation />
+          <dialog ref={deleteRef}>
+            <h3>Delete Note</h3>
+            <p>Are you sure you want to permanently delete this note? This action cannot be undone.</p>
+            <div className="modal-buttons">
+              <button onClick={() => deleteRef.current.close()}>Cancel</button>
+              <button onClick={() => handleDelete(note.id)}>Delete Note</button>
+            </div>
+          </dialog>
+          <dialog ref={archiveRef}>
+            <h3>Archive Note</h3>
+            <p>Are you sure you want to archive this note? You can find it in the Archived Notes section and restore it anytime.</p>
+            <div className="modal-buttons">
+              <button onClick={() => archiveRef.current.close()}>Cancel</button>
+              <button onClick={() => handleArchive(note.id)} style={{ background: "rgba(51, 92, 255, 1)" }} className="archive-modal-button">Archive Notes</button>
+            </div>
+          </dialog>
+        </>
+      }
     </>
   );
 }

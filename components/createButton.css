@@ -21,5 +21,7 @@
       border: none;
      padding-block: 12px;
      border-radius: 8px;
+     width: 100%;
+     margin-bottom: 16px;
   }
  }
