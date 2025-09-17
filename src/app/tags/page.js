@@ -31,7 +31,7 @@ export default function Tag() {
           <ul className="tags-list">
             {searchTags.map(tag => (
               <li key={tag} className="tags-item">
-                <Link href={`/tags/${tag}`}>
+                <Link href={``}>
                   <div>
                     <img src="/img/tag-icon-light.svg" alt="tag icon" />
                     <div className="tag-name">

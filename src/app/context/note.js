@@ -7,11 +7,19 @@ export const NotesContext = createContext();
 export default function NotesProvider({ children }) {
   const [notes, setNotes] = useState([]);
   const [theme, setTheme] = useState("light");
-  const [screenSize, setScreenSize] = useState(window.innerWidth > 768)
+  const [screenSize, setScreenSize] = useState(false)
 
-  useEffect(() => {
-    window.addEventListener('resize', () => setScreenSize(window.innerWidth > 768))
-  }, [])
+useEffect(() => {
+  const handleResize = () => {
+    setScreenSize(window.innerWidth > 768);
+  };
+
+  handleResize();
+
+  window.addEventListener("resize", handleResize);
+
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
 
   return (
     <NotesContext.Provider value={{ notes, setNotes, setTheme, theme, screenSize  }}>

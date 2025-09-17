@@ -19,6 +19,7 @@ export async function AddNote(formData) {
     .from("notes")
     .insert([formObj]);
 
+
   if (userError) {
     console.error("User fetch error:", userError.message);
     return { error: userError.message };
@@ -27,6 +28,5 @@ export async function AddNote(formData) {
     return { error: "Kullanıcı giriş yapmamış" };
   }
 
-  console.log(user.id);
 
 }

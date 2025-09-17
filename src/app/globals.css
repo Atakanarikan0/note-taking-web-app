@@ -82,6 +82,7 @@ li {
   }
 }
 .notes-item {
+  cursor: pointer;
   padding: 8px;
   margin-bottom: 4px;
   h6 {
@@ -317,5 +318,12 @@ background: #0E121B;
     >img {
       padding-block: 12px;
   }
+  }
+  .settings-box {
+    grid-column: 3 span;
+    display: flex;
+  }
+  .settings-container{
+    width: 258px;
   }
 }

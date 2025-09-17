@@ -34,7 +34,7 @@ export default function NoteDetail({ noteId }) {
 
   const note = notes.find(n => n.id === parseInt(noteId));
 
-  if (!note) return <p>Not bulunamadı.</p>;
+  if (!note) return ;
   function handleCancel(e) {
     e.preventDefault();
     e.target.closest('form').reset();
@@ -52,10 +52,14 @@ export default function NoteDetail({ noteId }) {
   async function handleDelete(id) {
     const supabase = await createClient();
     const { error } = await supabase.from('notes').delete().eq('id', id);
-    if (error) {
-      console.error(error)
-    } else {
-      redirect("/");
+    if(screenSize) {
+    deleteRef.current.close();
+    }else {
+      if (error) {
+        console.error(error)
+      } else {
+        redirect("/");
+      }
     }
 
   }
@@ -64,11 +68,15 @@ export default function NoteDetail({ noteId }) {
 
     const { error } = await supabase.from('notes').update({ archived: true }).eq('id', id);
 
-    if (error) {
-      console.error('Arşive gönderme hatası:', error);
-    } else {
-      console.log('Not başarıyla arşive gönderildi!');
-      redirect("/");
+    if(screenSize) {
+    archiveRef.current.close();
+    }else {
+      if (error) {
+        console.error('Arşive gönderme hatası:', error);
+      } else {
+        console.log('Not başarıyla arşive gönderildi!');
+        redirect("/");
+      }
     }
   }
   return (
@@ -78,11 +86,12 @@ export default function NoteDetail({ noteId }) {
         <>
           <div className="detail-container">
             <form onSubmit={handleEdit}>
-              <input type="text" name="title" value={editTitle} onChange={(e) => setEditTitle(e.target.value)}></input>
+              <input type="text" name="title" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
               <div>
                 <div className="note-input">
                   <img src="/img/tag-icon-light.svg" alt="tag icon" />
                   <h6 className="h6">Tags</h6>
+
                   <input type="text" name='tags' readOnly defaultValue={note?.tags} />
                 </div>
                 <div className="note-input">

@@ -110,3 +110,60 @@ form {
   background-color: white;
   font-size: 14px;
 }
+
+@media(min-width: 769px) {
+  .create-container {
+    padding: 20px 24px;
+    border-right: 1px solid #E0E4EA;
+    border-radius: 0;
+  }
+
+  form {
+    > input {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 24px;
+    }
+
+    textarea {
+      font-size: 14px;
+      height: 65vh;
+      margin-top: 16px;
+
+    }
+  }
+  .note-input {
+    margin-bottom: 16px;
+    input {
+      margin-left: 0;
+      width: 100%;
+      font-size: 14px;
+      
+    }
+    h6 {
+      font-size: 14px;
+    }
+  }
+  .action-bar {
+    border-bottom: 0;
+    border-top: 1px solid #E0E4EA;
+    padding-top: 16px;
+    gap: 16px;
+    button {
+      background: #335CFF;
+      color: #FFF;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 120%;
+      letter-spacing: -0.2px;
+      &:last-child {
+        background: #F3F5F8;
+        color: #525866;
+      }
+    }
+  }
+
+
+}
