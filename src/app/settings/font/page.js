@@ -7,11 +7,15 @@ import "./fonts.css";
 
 export default function FontTheme({ screenSize }) {
   const [font, setFont] = useState("sans-serif");
+  const [theme, setTheme] = useState(false); 
 
   useEffect(() => {
     const savedFont = localStorage.getItem("font") || "sans-serif";
     setFont(savedFont);
     document.body.style.fontFamily = savedFont;
+
+    const isDark = document.body.classList.contains("dark");
+    setTheme(isDark);
   }, []);
 
   function handleFontChange(newFont) {
@@ -20,11 +24,6 @@ export default function FontTheme({ screenSize }) {
     localStorage.setItem("font", newFont);
     console.log(document.body.style.fontFamily);
   }
-
-
-  const theme = document.body.classList.contains("dark");
-
-
   return (
     <>
       {screenSize ?
