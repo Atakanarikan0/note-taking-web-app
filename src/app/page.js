@@ -1,5 +1,5 @@
 "use client";
-import { Fragment, useContext, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { createClient } from "./utils/supabase/client";
 import Header from "@/components/header"
 import Tags from "@/src/app/tags/page"
@@ -11,6 +11,8 @@ import Tag from "@/src/app/tags/page";
 import NoteDetail from "./detail/[id]/noteDetail";
 import Settings from "./settings/page";
 import CreateNote from "./create-note/page";
+import Archive from "./archived/page";
+import useNotesRealtime from "./hook/realtime";
 
 const supabase = createClient()
 
@@ -20,6 +22,13 @@ export default function Home() {
   const [searchWord, setSearchWord] = useState("");
   const [showSettings, setShowSettings] = useState(false);
   const [createNote, setCreateNote] = useState(false);
+  const [showArchive, setShowArchive] = useState(false);
+
+    useNotesRealtime({
+    setNotes,
+    initialNotes: [], // sayfa ilk açıldığında supabase'den çektiğin data varsa buraya koyabilirsin
+    sortFn: (a, b) => b.created_at.localeCompare(a.created_at),
+  });
 
   async function getData() {
     const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -41,44 +50,79 @@ export default function Home() {
       console.log("Notes tablosu boş veya hata:", notesError);
     }
 
-// Realtime subscription
-  const channel = supabase
-    .channel("notes-changes")
-    .on(
-      "postgres_changes",
-      { event: "*", schema: "public", table: "notes" },
-      (payload) => {
-        setNotes((prevNotes) => {
-          if (payload.eventType === "INSERT") {
-            return [payload.new, ...prevNotes];
-          }
-          if (payload.eventType === "UPDATE") {
-            return prevNotes.map((note) =>
-              note.id === payload.new.id ? payload.new : note
-            );
-          }
-          if (payload.eventType === "DELETE") {
-            return prevNotes.filter((note) => note.id !== payload.old.id);
-          }
-          return prevNotes;
-        });
-      }
-    )
-    .subscribe();
+    // Realtime subscription
+    // const channel = supabase
+    //   .channel("notes-changes")
+    //   .on(
+    //     "postgres_changes",
+    //     { event: "*", schema: "public", table: "notes" },
+    //     (payload) => {
+    //       setNotes((prevNotes) => {
+    //         if (payload.eventType === "INSERT") {
+    //           return [payload.new, ...prevNotes];
+    //         }
+    //         if (payload.eventType === "UPDATE") {
+    //           return prevNotes.map((note) =>
+    //             note.id === payload.new.id ? payload.new : note
+    //           );
+    //         }
+    //         if (payload.eventType === "DELETE") {
+    //           return prevNotes.filter((note) => note.id !== payload.old.id);
+    //         }
+    //         return prevNotes;
+    //       });
+    //     }
+    //   )
+    //   .subscribe();
+    
 
-  // cleanup için return
-  return () => {
-    supabase.removeChannel(channel);
-  };
+    // // cleanup için return
+    // return () => {
+    //   supabase.removeChannel(channel);
+    // };
 
 
   }
-useEffect(() => {
-  const cleanup = getData();
-  return () => {
-    if (typeof cleanup === "function") cleanup();
-  };
-}, []);
+  useEffect(() => {
+    const cleanup = getData();
+    return () => {
+      if (typeof cleanup === "function") cleanup();
+    };
+  }, []);
+  useEffect(() => {
+    const channel = supabase
+      .channel("notes-changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "notes" },
+        (payload) => {
+          setNotes((prevNotes) => {
+            switch (payload.eventType) {
+              case "INSERT": {
+                const exists = prevNotes.some((n) => n.id === payload.new.id);
+                if (exists) return prevNotes;
+                return [payload.new, ...prevNotes];
+              }
+              case "UPDATE": {
+                return prevNotes.map((n) =>
+                  n.id === payload.new.id ? payload.new : n
+                );
+              }
+              case "DELETE": {
+                return prevNotes.filter((n) => n.id !== payload.old.id);
+              }
+              default:
+                return prevNotes;
+            }
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [setNotes]);
 
   function handleClick(id) {
     setCreateNote(false)
@@ -90,11 +134,11 @@ useEffect(() => {
         <>
           <div className="header-container">
             <Header />
-            <Navigation setShowSettings={setShowSettings} />
+            <Navigation setShowSettings={setShowSettings} setShowArchive={setShowArchive} setSelectedNote={setSelectedNote} />
             <Tags />
           </div>
           <div className="header-bar">
-            <h2>All Notes</h2>
+            <h2>{showSettings ? "Settings" : showArchive ? "Archived Notes" : "All Notes"}</h2>
             <input type="text" placeholder="Search by title ..." value={searchWord || ""} onChange={e => setSearchWord(e.target.value)} />
             <button onClick={() => setShowSettings(true)}><img src="/img/setting-icon-light.svg" alt="Search" /></button>
           </div>
@@ -105,45 +149,64 @@ useEffect(() => {
             </div>
             :
             <>
-              <div className="notes">
-                <CreateNoteButton setCreateNote={setCreateNote} />
-                <ul className="notes-list">
-                  {notes.length === 0
-                    ?
-                    <p>You don’t have any notes yet. Start a new note to capture your thoughts and ideas.</p>
+              {showArchive
+                ?
+                <>
+                  <div className="archive-notes">
+                    <CreateNoteButton setCreateNote={setCreateNote} />
+                    <Archive setSelectedNote={setSelectedNote} setCreateNote={setCreateNote}/>
+                  </div>
+                  {createNote ?
+                    <CreateNote />
                     :
-                    (notes
-                      .filter(note => note.title.toLowerCase().includes(searchWord.toLowerCase()))
-                      .map(note =>
-                        <Fragment key={note.id}>
-                          <li className="notes-item" onClick={() => handleClick(note.id)} >
-                            <h6>{note.title}</h6>
-                            <div className="tags">
-                              {note.tags.map((tag, index) => (
-                                <span key={index}>{tag}</span>
-                              ))}
-                            </div>
-
-                            <span>
-                              {new Date(note.created_at).toLocaleDateString("en-GB", {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                              })}
-                            </span>
-                          </li>
-                          <hr />
-                        </Fragment>
-                      ))
+                    <div className="note-detail">
+                      <NoteDetail noteId={selectedNote.id} />
+                    </div>
                   }
-                </ul>
-              </div>
-              {createNote ?
-                <CreateNote />
+                </>
                 :
-                <div className="note-detail">
-                  <NoteDetail noteId={selectedNote.id} />
-                </div>
+                <>
+                  <div className="notes">
+                    <CreateNoteButton setCreateNote={setCreateNote} />
+                    <ul className="notes-list">
+                      {notes.length === 0
+                        ?
+                        <p>You don’t have any notes yet. Start a new note to capture your thoughts and ideas.</p>
+                        :
+                        (notes
+                          .filter(note => note.title.toLowerCase().includes(searchWord.toLowerCase()))
+                          .map(note =>
+                            <Fragment key={note.id}>
+                              <li className="notes-item" onClick={() => handleClick(note.id)} >
+                                <h6>{note.title}</h6>
+                                <div className="tags">
+                                  {note.tags.map((tag, index) => (
+                                    <span key={index}>{tag}</span>
+                                  ))}
+                                </div>
+
+                                <span>
+                                  {new Date(note.created_at).toLocaleDateString("en-GB", {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                  })}
+                                </span>
+                              </li>
+                              <hr />
+                            </Fragment>
+                          ))
+                      }
+                    </ul>
+                  </div>
+                  {createNote ?
+                    <CreateNote />
+                    :
+                    <div className="note-detail">
+                      <NoteDetail noteId={selectedNote.id} />
+                    </div>
+                  }
+                </>
               }
             </>
           }
@@ -188,6 +251,10 @@ useEffect(() => {
           <Navigation />
         </>
       }
-    </div>
+    </div >
   )
 }
+
+
+
+

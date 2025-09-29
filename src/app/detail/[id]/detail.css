@@ -266,5 +266,15 @@ dialog p {
       }
     }
   }
+  .note-input {
+    p {
+      font-family: Inter;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 130%;
+      letter-spacing: -0.2px;
+    }
+
+  }
 
 }

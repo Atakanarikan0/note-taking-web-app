@@ -6,13 +6,13 @@ import { useContext } from "react";
 import { NotesContext } from "@/src/app/context/note";
 
 
-export default function Navigation({ setShowSettings }) {
+export default function Navigation({ setShowSettings, setSelectedNote,  setShowArchive }) {
   const { screenSize } = useContext(NotesContext);
   const pathname = usePathname(); // aktif path'i al
   return (
     <>
       {screenSize ? 
-      <DesktopNavigation setShowSettings={setShowSettings}/>
+      <DesktopNavigation setShowSettings={setShowSettings} setSelectedNote={setSelectedNote} setShowArchive={setShowArchive}/>
       :
       <div className="navigation-container">
       <Link href="/" className={pathname === "/" ? "active" : ""}>
@@ -63,19 +63,18 @@ export default function Navigation({ setShowSettings }) {
 
   )
 }
-function DesktopNavigation({setShowSettings}) {
+function DesktopNavigation({setShowSettings, setShowArchive, setSelectedNote}) {
   return (
     <>
       <div className="btn-group">
-        <button onClick={() => setShowSettings(false)}><img
+        <button onClick={() => {setShowArchive(false); setShowSettings(false); setSelectedNote([]);}}><img
           src="/img/home-icon-light.svg"
           alt="Main"
         />
           <span>All Notes</span></button>
-        <button>        <img
+        <button onClick={() => {setShowArchive(true); setShowSettings(false); setSelectedNote([]);}}><img
           src="/img/archive-icon-light.svg"
-          alt="Archive"
-        />
+          alt="Archive"/>
           <span>Archived Notes</span></button>
       </div>
     </>

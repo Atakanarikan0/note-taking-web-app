@@ -34,7 +34,7 @@ export default function NoteDetail({ noteId }) {
 
   const note = notes.find(n => n.id === parseInt(noteId));
 
-  if (!note) return ;
+  if (!note) return;
   function handleCancel(e) {
     e.preventDefault();
     e.target.closest('form').reset();
@@ -52,9 +52,9 @@ export default function NoteDetail({ noteId }) {
   async function handleDelete(id) {
     const supabase = await createClient();
     const { error } = await supabase.from('notes').delete().eq('id', id);
-    if(screenSize) {
-    deleteRef.current.close();
-    }else {
+    if (screenSize) {
+      deleteRef.current.close();
+    } else {
       if (error) {
         console.error(error)
       } else {
@@ -68,15 +68,25 @@ export default function NoteDetail({ noteId }) {
 
     const { error } = await supabase.from('notes').update({ archived: true }).eq('id', id);
 
-    if(screenSize) {
-    archiveRef.current.close();
-    }else {
+    if (screenSize) {
+      archiveRef.current.close();
+    } else {
       if (error) {
         console.error('Arşive gönderme hatası:', error);
       } else {
         console.log('Not başarıyla arşive gönderildi!');
         redirect("/");
       }
+    }
+  }
+  async function handleDeleteArchive(id) {
+    const supabase = await createClient();
+
+    const { error } = await supabase.from('notes').update({ archived: false }).eq('id', id);
+    if (error) {
+      console.error('Arşivden çıkartılmama hatası:', error);
+    } else {
+      console.log('Not başarıyla arşivden çıkartıldı!');
     }
   }
   return (
@@ -91,9 +101,15 @@ export default function NoteDetail({ noteId }) {
                 <div className="note-input">
                   <img src="/img/tag-icon-light.svg" alt="tag icon" />
                   <h6 className="h6">Tags</h6>
-
                   <input type="text" name='tags' readOnly defaultValue={note?.tags} />
                 </div>
+                {note.archived && 
+                <div className="note-input">
+                  <img src="/img/status-icon.svg" alt="Status" />
+                  <h6 className="h6">Status</h6>
+                  <input type="text"  readOnly defaultValue={"Archived"} />
+                </div>
+                }
                 <div className="note-input">
                   <img src="/img/clock-icon.svg" alt="clock icon" />
                   <h6 className="h6">Last edited</h6>
@@ -116,7 +132,12 @@ export default function NoteDetail({ noteId }) {
             </form>
             <div className="dlt-arch-btns">
               <button type="button" onClick={() => deleteRef.current.showModal()}><img src="/img/delete-icon.svg" alt="Delete" />Delete Note</button>
-              <button type="button" onClick={() => archiveRef.current.showModal()}><img src="/img/archive-icon-light.svg" alt="Archive" />Archive Note</button>
+              {note.archived
+                ?
+                <button type="button" onClick={() => handleDeleteArchive(note.id)}><img src="/img/refresh-left.svg" alt="Restore" />Restore Note</button>
+                :
+                <button type="button" onClick={() => archiveRef.current.showModal()}><img src="/img/archive-icon-light.svg" alt="Archive" />Archive Note</button>
+              }
             </div>
           </div>
           <dialog ref={deleteRef}>
@@ -145,7 +166,12 @@ export default function NoteDetail({ noteId }) {
               <div className="action-bar">
                 <Link href="/" className="go-back">Go Back</Link>
                 <button type="button" onClick={() => deleteRef.current.showModal()}><img src="/img/delete-icon.svg" alt="Delete" /></button>
-                <button type="button" onClick={() => archiveRef.current.showModal()}><img src="/img/archive-icon-light.svg" alt="Archive" /></button>
+                {note.archived
+                  ?
+                  <button type="button" onClick={() => handleDeleteArchive(note.id)}><img src="/img/refresh-left.svg" alt="Restore" /></button>
+                  :
+                  <button type="button" onClick={() => archiveRef.current.showModal()}><img src="/img/archive-icon-light.svg" alt="Archive" /></button>
+                }                
                 <button type="button" onClick={handleCancel}>Cancel</button>
                 <button type="submit">Save Note</button>
               </div>

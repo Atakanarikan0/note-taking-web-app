@@ -23,6 +23,7 @@ export default function Tag() {
     }
     getTagsData()
   }, [notes])
+  console.log(searchTags);
   return (
     <>
       {screenSize ?
@@ -31,14 +32,14 @@ export default function Tag() {
           <ul className="tags-list">
             {searchTags.map(tag => (
               <li key={tag} className="tags-item">
-                <Link href={``}>
+                <button>
                   <div>
                     <img src="/img/tag-icon-light.svg" alt="tag icon" />
                     <div className="tag-name">
                       <h6>{tag}</h6>
                     </div>
                   </div>
-                </Link>
+                </button>
               </li>
             ))}
           </ul>

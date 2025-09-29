@@ -1,7 +1,7 @@
 .theme-container {
   padding: 24px 16px;
   background: #FFF;
-  height: 100vh;
+  min-height: 100vh;
   border-radius: 12px 12px 0 0;
 
   h2 {
@@ -69,5 +69,10 @@
   .theme-container {
     padding: 24px 32px;
     border-radius: 16px 16px 0 0;
+  }
+}
+@media (min-width: 769px) {
+  .theme-container {
+    border-radius: 0;
   }
 }
