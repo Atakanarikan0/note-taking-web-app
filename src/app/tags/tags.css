@@ -78,6 +78,13 @@
       letter-spacing: -0.2px;
  
     }
+    .active {
+      background: #F3F5F8;
+      border-radius: 8px;
+      .tag-name h6 {
+        color: #335CFF;
+      }
+    }
   }
   .tags-item {
     border: none;

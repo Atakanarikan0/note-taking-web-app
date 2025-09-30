@@ -37,7 +37,8 @@ export default function NoteDetail({ noteId }) {
   if (!note) return;
   function handleCancel(e) {
     e.preventDefault();
-    e.target.closest('form').reset();
+    setEditTitle(note.title);
+    setEditBody(note.body);
   }
   async function handleEdit(e) {
     const supabase = await createClient()
@@ -103,12 +104,12 @@ export default function NoteDetail({ noteId }) {
                   <h6 className="h6">Tags</h6>
                   <input type="text" name='tags' readOnly defaultValue={note?.tags} />
                 </div>
-                {note.archived && 
-                <div className="note-input">
-                  <img src="/img/status-icon.svg" alt="Status" />
-                  <h6 className="h6">Status</h6>
-                  <input type="text"  readOnly defaultValue={"Archived"} />
-                </div>
+                {note.archived &&
+                  <div className="note-input">
+                    <img src="/img/status-icon.svg" alt="Status" />
+                    <h6 className="h6">Status</h6>
+                    <input type="text" readOnly defaultValue={"Archived"} />
+                  </div>
                 }
                 <div className="note-input">
                   <img src="/img/clock-icon.svg" alt="clock icon" />
@@ -171,7 +172,7 @@ export default function NoteDetail({ noteId }) {
                   <button type="button" onClick={() => handleDeleteArchive(note.id)}><img src="/img/refresh-left.svg" alt="Restore" /></button>
                   :
                   <button type="button" onClick={() => archiveRef.current.showModal()}><img src="/img/archive-icon-light.svg" alt="Archive" /></button>
-                }                
+                }
                 <button type="button" onClick={handleCancel}>Cancel</button>
                 <button type="submit">Save Note</button>
               </div>

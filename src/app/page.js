@@ -13,6 +13,7 @@ import Settings from "./settings/page";
 import CreateNote from "./create-note/page";
 import Archive from "./archived/page";
 import useNotesRealtime from "./hook/realtime";
+import Loader from "./loading/page";
 
 const supabase = createClient()
 
@@ -23,10 +24,13 @@ export default function Home() {
   const [showSettings, setShowSettings] = useState(false);
   const [createNote, setCreateNote] = useState(false);
   const [showArchive, setShowArchive] = useState(false);
+  const [showTag, setShowTag] = useState("");
+  const [loading, setLoading] = useState(true);
 
-    useNotesRealtime({
+
+  useNotesRealtime({
     setNotes,
-    initialNotes: [], // sayfa ilk açıldığında supabase'den çektiğin data varsa buraya koyabilirsin
+    initialNotes: [],
     sortFn: (a, b) => b.created_at.localeCompare(a.created_at),
   });
 
@@ -50,39 +54,12 @@ export default function Home() {
       console.log("Notes tablosu boş veya hata:", notesError);
     }
 
-    // Realtime subscription
-    // const channel = supabase
-    //   .channel("notes-changes")
-    //   .on(
-    //     "postgres_changes",
-    //     { event: "*", schema: "public", table: "notes" },
-    //     (payload) => {
-    //       setNotes((prevNotes) => {
-    //         if (payload.eventType === "INSERT") {
-    //           return [payload.new, ...prevNotes];
-    //         }
-    //         if (payload.eventType === "UPDATE") {
-    //           return prevNotes.map((note) =>
-    //             note.id === payload.new.id ? payload.new : note
-    //           );
-    //         }
-    //         if (payload.eventType === "DELETE") {
-    //           return prevNotes.filter((note) => note.id !== payload.old.id);
-    //         }
-    //         return prevNotes;
-    //       });
-    //     }
-    //   )
-    //   .subscribe();
-    
-
-    // // cleanup için return
-    // return () => {
-    //   supabase.removeChannel(channel);
-    // };
-
-
   }
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 7000);
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     const cleanup = getData();
     return () => {
@@ -127,64 +104,70 @@ export default function Home() {
   function handleClick(id) {
     setCreateNote(false)
     setSelectedNote(notes.find(x => x.id === id));
+    console.log(notes.find(x => x.id === id));
   }
   return (
-    <div className="container">
-      {screenSize ?
-        <>
-          <div className="header-container">
-            <Header />
-            <Navigation setShowSettings={setShowSettings} setShowArchive={setShowArchive} setSelectedNote={setSelectedNote} />
-            <Tags />
-          </div>
-          <div className="header-bar">
-            <h2>{showSettings ? "Settings" : showArchive ? "Archived Notes" : "All Notes"}</h2>
-            <input type="text" placeholder="Search by title ..." value={searchWord || ""} onChange={e => setSearchWord(e.target.value)} />
-            <button onClick={() => setShowSettings(true)}><img src="/img/setting-icon-light.svg" alt="Search" /></button>
-          </div>
-          {showSettings
-            ?
-            <div className="settings-box">
-              <Settings screenSize={screenSize} />
-            </div>
-            :
+    <>
+      {loading ?
+        <Loader />
+        :
+        <div className="container">
+          {screenSize ?
             <>
-              {showArchive
-                ?
+              <div className="header-container">
+                <Header />
+                <Navigation setShowSettings={setShowSettings} setShowArchive={setShowArchive} setSelectedNote={setSelectedNote} setShowTag={setShowTag} />
+                <Tags setShowTag={setShowTag} showTag={showTag} setShowArchive={setShowArchive} setCreateNote={setCreateNote} setSelectedNote={setSelectedNote} setShowSettings={setShowSettings} />
+              </div>
+              <div className="header-bar">
+                <h2>  {showSettings
+                  ? "Settings"
+                  : showArchive
+                    ? "Archived Notes"
+                    : showTag !== ""
+                      ? `Notes Tagged: ${showTag}`
+                      : "All Notes"} </h2>
+                <input type="text" placeholder="Search by title ..." value={searchWord || ""} onChange={e => setSearchWord(e.target.value)} />
+                <button onClick={() => { setShowSettings(true); setShowTag("") }}><img src="/img/setting-icon-light.svg" alt="Search" /></button>
+              </div>
+              {showSettings ? (
+                <div className="settings-box">
+                  <Settings screenSize={screenSize} />
+                </div>
+              ) : showArchive ? (
                 <>
                   <div className="archive-notes">
-                    <CreateNoteButton setCreateNote={setCreateNote} />
-                    <Archive setSelectedNote={setSelectedNote} setCreateNote={setCreateNote}/>
+                    <CreateNoteButton setCreateNote={setCreateNote} setShowSettings={setShowSettings} setShowArchive={setShowArchive} setSelectedNote={setSelectedNote} setShowTag={setShowTag} />
+                    <Archive setSelectedNote={setSelectedNote} setCreateNote={setCreateNote} />
                   </div>
-                  {createNote ?
+                  {createNote ? (
                     <CreateNote />
-                    :
+                  ) : (
                     <div className="note-detail">
                       <NoteDetail noteId={selectedNote.id} />
                     </div>
-                  }
+                  )}
                 </>
-                :
+              ) : showTag ? (
                 <>
                   <div className="notes">
-                    <CreateNoteButton setCreateNote={setCreateNote} />
+                    <CreateNoteButton setCreateNote={setCreateNote} setShowSettings={setShowSettings} setShowArchive={setShowArchive} setSelectedNote={setSelectedNote} setShowTag={setShowTag} />
+                    <span>All notes with the ”{showTag}” tag are shown here.</span>
                     <ul className="notes-list">
-                      {notes.length === 0
-                        ?
-                        <p>You don’t have any notes yet. Start a new note to capture your thoughts and ideas.</p>
-                        :
-                        (notes
-                          .filter(note => note.title.toLowerCase().includes(searchWord.toLowerCase()))
-                          .map(note =>
+                      {notes.filter(note => note.tags.includes(showTag)).length === 0 ? (
+                        <p>No notes found for tag: {showTag}</p>
+                      ) : (
+                        notes
+                          .filter(note => note.tags.includes(showTag))
+                          .map(note => (
                             <Fragment key={note.id}>
-                              <li className="notes-item" onClick={() => handleClick(note.id)} >
+                              <li className="notes-item" onClick={() => handleClick(note.id)}>
                                 <h6>{note.title}</h6>
                                 <div className="tags">
                                   {note.tags.map((tag, index) => (
                                     <span key={index}>{tag}</span>
                                   ))}
                                 </div>
-
                                 <span>
                                   {new Date(note.created_at).toLocaleDateString("en-GB", {
                                     day: "2-digit",
@@ -196,62 +179,108 @@ export default function Home() {
                               <hr />
                             </Fragment>
                           ))
-                      }
+                      )}
                     </ul>
                   </div>
-                  {createNote ?
+                  {createNote ? (
                     <CreateNote />
-                    :
+                  ) : (
                     <div className="note-detail">
                       <NoteDetail noteId={selectedNote.id} />
                     </div>
-                  }
+                  )}
                 </>
-              }
+              ) : (
+                <>
+                  <div className="notes">
+                    <CreateNoteButton setCreateNote={setCreateNote} setShowSettings={setShowSettings} setShowArchive={setShowArchive} setSelectedNote={setSelectedNote} setShowTag={setShowTag} />
+                    <ul className="notes-list">
+                      {notes.length === 0 ? (
+                        <p>You don’t have any notes yet. Start a new note to capture your thoughts and ideas.</p>
+                      ) : (
+                        notes
+                          .filter(note =>
+                            note.title.toLowerCase().includes(searchWord.toLowerCase())
+                          )
+                          .map(note => (
+                            <Fragment key={note.id}>
+                              <li className={`notes-item ${selectedNote?.id === note.id ? "open" : ""}`}
+                                onClick={() => handleClick(note.id)}>
+                                <h6>{note.title}</h6>
+                                <div className="tags">
+                                  {note.tags.map((tag, index) => (
+                                    <span key={index}>{tag}</span>
+                                  ))}
+                                </div>
+                                <span>
+                                  {new Date(note.created_at).toLocaleDateString("en-GB", {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                  })}
+                                </span>
+                              </li>
+                              <hr />
+                            </Fragment>
+                          ))
+                      )}
+                    </ul>
+                  </div>
+                  {createNote ? (
+                    <CreateNote />
+                  ) : (
+                    <div className="note-detail">
+                      <NoteDetail noteId={selectedNote.id} />
+                    </div>
+                  )}
+                </>
+              )}
+            </>
+            :
+            <>
+              <Header />
+              <div className="notes-section">
+                <h2>All Notes</h2>
+                <ul className="notes-list">
+                  {notes.length === 0
+                    ?
+                    <p>You don’t have any notes yet. Start a new note to capture your thoughts and ideas.</p>
+                    :
+                    (notes.map(note =>
+                      <Fragment key={note.id}>
+                        <li className="notes-item" >
+                          <Link href={`/detail/${note.id}`}>
+                            <h6>{note.title}</h6>
+                            <div className="tags">
+                              {note.tags.map((tag, index) => (
+                                <span key={index}>{tag}</span>
+                              ))}
+                            </div>
+
+                            <span>
+                              {new Date(note.created_at).toLocaleDateString("en-GB", {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              })}
+                            </span>
+                          </Link>
+                        </li>
+                        <hr />
+                      </Fragment>
+                    ))
+                  }
+                  <CreateNoteButton />
+                </ul>
+              </div>
+              <Navigation />
             </>
           }
-        </>
-        :
-        <>
-          <Header />
-          <div className="notes-section">
-            <h2>All Notes</h2>
-            <ul className="notes-list">
-              {notes.length === 0
-                ?
-                <p>You don’t have any notes yet. Start a new note to capture your thoughts and ideas.</p>
-                :
-                (notes.map(note =>
-                  <Fragment key={note.id}>
-                    <li className="notes-item" >
-                      <Link href={`/detail/${note.id}`}>
-                        <h6>{note.title}</h6>
-                        <div className="tags">
-                          {note.tags.map((tag, index) => (
-                            <span key={index}>{tag}</span>
-                          ))}
-                        </div>
 
-                        <span>
-                          {new Date(note.created_at).toLocaleDateString("en-GB", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          })}
-                        </span>
-                      </Link>
-                    </li>
-                    <hr />
-                  </Fragment>
-                ))
-              }
-              <CreateNoteButton />
-            </ul>
-          </div>
-          <Navigation />
-        </>
+
+        </div >
       }
-    </div >
+    </>
   )
 }
 

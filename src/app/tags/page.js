@@ -8,9 +8,10 @@ import { createClient } from "../utils/supabase/client";
 import Link from "next/link";
 import CreateNoteButton from "@/components/createButton";
 
-export default function Tag() {
+export default function Tag({ setShowTag, showTag, setShowSettings, setShowArchive, setCreateNote, setSelectedNote }) {
   const { notes, screenSize } = useContext(NotesContext);
   const [searchTags, setSearchTags] = useState([]);
+  const [loadingTags, setLoadingTags] = useState(true);
 
   useEffect(() => {
     async function getTagsData() {
@@ -20,10 +21,20 @@ export default function Tag() {
       const tagsArray = tags.flatMap(note => note.tags); //flatMap -> iç diziler tek bir düz diziye dönüştürülüyor     
       const uniqueTags = [...new Set(tagsArray)]; // Set-> benzersiz elemanlardan oluşur - ... ile takrar diziye çevriliyor
       setSearchTags(uniqueTags);
+      setLoadingTags(false);
+
     }
     getTagsData()
   }, [notes])
-  console.log(searchTags);
+
+ function handleTagClick(tag) {
+  setShowTag(tag);          
+  setShowSettings(false);  
+  setShowArchive(false);    
+  setCreateNote(false);     
+  setSelectedNote([]);   
+ }
+
   return (
     <>
       {screenSize ?
@@ -31,7 +42,8 @@ export default function Tag() {
           <h2>Tags</h2>
           <ul className="tags-list">
             {searchTags.map(tag => (
-              <li key={tag} className="tags-item">
+              <li key={tag} className={`tags-item ${showTag === tag ? "active" : ""}`}
+                onClick={() => handleTagClick(tag)}>
                 <button>
                   <div>
                     <img src="/img/tag-icon-light.svg" alt="tag icon" />

@@ -335,4 +335,38 @@ background: #0E121B;
   .settings-container{
     width: 258px;
   }
+  .notes {
+    .notes-list {
+      margin-top: 16px;
+    }
+    >span {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 130%;
+      letter-spacing: -0.2px;
+      color: #2B303B;
+    }
+  }
+  .open {
+    background: #F3F5F8;
+    border-radius: 8px;
+  }
+}
+
+@keyframes flyRight {
+  0% {
+    left: -10%;
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    left: 45%;
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    transform: scale(0);
+    opacity: 0;
+  }
 }
