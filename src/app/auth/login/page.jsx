@@ -24,7 +24,7 @@ export default function Login() {
           </div>
           <div className="password-wrapper">
             <input type={showPassword ? 'text' : 'password'} name="password" id="password" required />
-            <img onClick={() => setShowPassword(!showPassword)} src="/img/password.png" alt="Göster/Gizle"  />
+            <img onClick={() => setShowPassword(!showPassword)} src={showPassword ? "/img/eye-slash-icon.svg" :"/img/password.png"} alt="Göster/Gizle"  />
           </div>
           <button type="submit">Login</button>
         </form>

@@ -1,7 +1,7 @@
 import { updateSession } from './app/utils/supabase/middleware'
 
 export async function middleware(request) {
-  console.log("middleware çalıştı", request.nextUrl.pathname);
+  console.log(request.nextUrl.pathname);
   return await updateSession(request)
 }
 

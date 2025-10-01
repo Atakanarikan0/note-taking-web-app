@@ -12,27 +12,22 @@ import NoteDetail from "./detail/[id]/noteDetail";
 import Settings from "./settings/page";
 import CreateNote from "./create-note/page";
 import Archive from "./archived/page";
-import useNotesRealtime from "./hook/realtime";
 import Loader from "./loading/page";
 
-const supabase = createClient()
 
 export default function Home() {
-  const { notes, setNotes, screenSize } = useContext(NotesContext);
+  const { notes, setNotes, screenSize, loading, setLoading } = useContext(NotesContext);
   const [selectedNote, setSelectedNote] = useState([]);
   const [searchWord, setSearchWord] = useState("");
   const [showSettings, setShowSettings] = useState(false);
   const [createNote, setCreateNote] = useState(false);
   const [showArchive, setShowArchive] = useState(false);
   const [showTag, setShowTag] = useState("");
-  const [loading, setLoading] = useState(true);
 
+  // useNotesRealtime({ setNotes });
 
-  useNotesRealtime({
-    setNotes,
-    initialNotes: [],
-    sortFn: (a, b) => b.created_at.localeCompare(a.created_at),
-  });
+  useEffect(() => {
+  const supabase = createClient();
 
   async function getData() {
     const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -40,71 +35,118 @@ export default function Home() {
       console.error("Kullanıcı alınamadı:", userError.message);
       return;
     }
-    if (!user) return; // giriş yapılmamışsa
+    if (!user) return;
 
     const { data: notesData, error: notesError } = await supabase
       .from("notes")
       .select("*")
-      .eq("user_id", user.id) // sadece giriş yapan kullanıcıya ait notları getir
+      .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
-    setNotes(notesData);
-    if (!notesError && notesData) {
-    } else {
-      console.log("Notes tablosu boş veya hata:", notesError);
-    }
-
+    if (notesData) setNotes(notesData);
+    if (notesError) console.log("Notes tablosu boş veya hata:", notesError);
   }
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 7000);
-    return () => clearTimeout(timer);
-  }, []);
 
-  useEffect(() => {
-    const cleanup = getData();
-    return () => {
-      if (typeof cleanup === "function") cleanup();
-    };
-  }, []);
-  useEffect(() => {
-    const channel = supabase
-      .channel("notes-changes")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "notes" },
-        (payload) => {
-          setNotes((prevNotes) => {
-            switch (payload.eventType) {
-              case "INSERT": {
-                const exists = prevNotes.some((n) => n.id === payload.new.id);
-                if (exists) return prevNotes;
-                return [payload.new, ...prevNotes];
-              }
-              case "UPDATE": {
-                return prevNotes.map((n) =>
-                  n.id === payload.new.id ? payload.new : n
-                );
-              }
-              case "DELETE": {
-                return prevNotes.filter((n) => n.id !== payload.old.id);
-              }
-              default:
-                return prevNotes;
-            }
-          });
+  // 1️⃣ İlk veriyi çek
+  getData();
+
+  // 2️⃣ Realtime channel oluştur
+  const channel = supabase
+    .channel("notes-changes")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "notes" },
+      (payload) => {
+        console.log("Realtime payload:", payload);
+
+        if (payload.eventType === "INSERT") {
+        return  setNotes(prev => [...prev, payload.new]);
         }
-      )
-      .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [setNotes]);
+        if (payload.eventType === "UPDATE") {
+         return setNotes(prev => prev.map(n => n.id === payload.new.id ? payload.new : n));
+        }
+
+        if (payload.eventType === "DELETE") {
+        return  setNotes(prev => prev.filter(n => n.id !== payload.old.id));
+        }
+      }
+    )
+    .subscribe();
+ getData()
+  // Cleanup
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}, [setNotes]);
+
+// useEffect(() => {
+//   async function getData() {
+//     const { data: { user }, error: userError } = await supabase.auth.getUser();
+//     if (userError) {
+//       console.error("Kullanıcı alınamadı:", userError.message);
+//       return;
+//     }
+//     if (!user) return; // giriş yapılmamışsa
+
+//     const { data: notesData, error: notesError } = await supabase
+//       .from("notes")
+//       .select("*")
+//       .eq("user_id", user.id) // sadece giriş yapan kullanıcıya ait notları getir
+//       .order("created_at", { ascending: false });
+
+//     setNotes(notesData);
+//     if (!notesError && notesData) {
+//     } else {
+//       console.log("Notes tablosu boş veya hata:", notesError);
+//     }
+
+//   }
+// getData()
+// }, [])
+
+
+  useEffect(() => {
+    if (loading) {
+      const timer = setTimeout(() => setLoading(false), 7000);
+      return () => clearTimeout(timer);
+    }
+  }, [loading]);
+
+  
+  // useEffect(() => {
+  //      const channel = supabase
+  //     .channel("notes-changes")
+  //     .on(
+  //       "postgres_changes",
+  //       { event: "*", schema: "public", table: "notes" },
+  //       (payload) => {
+  //         console.log("Realtime payload:", payload);
+          
+
+  //         if (payload.eventType === "INSERT") {
+  //          return  setNotes(prev => [...prev, payload.new]);
+  //         }
+
+  //         if (payload.eventType === "UPDATE") {
+  //          return setNotes(prev => prev.map(n => n.id === payload.new.id ? payload.new : n));
+  //         }
+
+  //         if (payload.eventType === "DELETE") {
+  //           return setNotes(prev => prev.filter(n => n.id !== payload.old.id));
+  //         }
+  //       }
+  //     )
+  //     .subscribe();
+      
+  //   return () => {
+  //      supabase.removeChannel(channel)
+  //   };
+  // }, []);
 
   function handleClick(id) {
     setCreateNote(false)
     setSelectedNote(notes.find(x => x.id === id));
-    console.log(notes.find(x => x.id === id));
   }
   return (
     <>
@@ -276,8 +318,6 @@ export default function Home() {
               <Navigation />
             </>
           }
-
-
         </div >
       }
     </>

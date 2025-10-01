@@ -30,10 +30,7 @@ export default function NoteDetail({ noteId }) {
     getPostDetail()
   }, [noteId])
 
-  if (!notes.length) return <p>Loading...</p>;
-
-  const note = notes.find(n => n.id === parseInt(noteId));
-
+  const note = notes.find(n => n.id === noteId);
   if (!note) return;
   function handleCancel(e) {
     e.preventDefault();
@@ -92,7 +89,6 @@ export default function NoteDetail({ noteId }) {
   }
   return (
     <>
-
       {screenSize ?
         <>
           <div className="detail-container">
@@ -102,13 +98,13 @@ export default function NoteDetail({ noteId }) {
                 <div className="note-input">
                   <img src="/img/tag-icon-light.svg" alt="tag icon" />
                   <h6 className="h6">Tags</h6>
-                  <input type="text" name='tags' readOnly defaultValue={note?.tags} />
+                  <input type="text" name='tags' readOnly value={note?.tags} />
                 </div>
                 {note.archived &&
                   <div className="note-input">
                     <img src="/img/status-icon.svg" alt="Status" />
                     <h6 className="h6">Status</h6>
-                    <input type="text" readOnly defaultValue={"Archived"} />
+                    <input type="text" readOnly value={"Archived"} />
                   </div>
                 }
                 <div className="note-input">
@@ -181,7 +177,7 @@ export default function NoteDetail({ noteId }) {
                 <div className="note-input">
                   <img src="/img/tag-icon-light.svg" alt="tag icon" />
                   <h6 className="h6">Tags</h6>
-                  <input type="text" name='tags' readOnly defaultValue={note?.tags} />
+                  <input type="text" name='tags' readOnly value={note?.tags} />
                 </div>
                 <div className="note-input">
                   <img src="/img/clock-icon.svg" alt="clock icon" />

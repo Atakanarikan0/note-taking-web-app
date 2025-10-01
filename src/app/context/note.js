@@ -8,6 +8,7 @@ export default function NotesProvider({ children }) {
   const [notes, setNotes] = useState([]);
   const [theme, setTheme] = useState("light");
   const [screenSize, setScreenSize] = useState(false)
+  const [loading, setLoading] = useState(true);
 
 useEffect(() => {
   const handleResize = () => {
@@ -22,7 +23,7 @@ useEffect(() => {
 }, []);
 
   return (
-    <NotesContext.Provider value={{ notes, setNotes, setTheme, theme, screenSize  }}>
+    <NotesContext.Provider value={{ loading, setLoading, notes, setNotes, setTheme, theme, screenSize  }}>
       {children}
     </NotesContext.Provider>
   )

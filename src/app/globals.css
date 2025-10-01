@@ -179,6 +179,9 @@ input {
     color: #CACFD8;
   }
   input, textarea {
+    &::placeholder {
+      color: #E0E4EA;
+    }
     background: inherit;
     color: #FFF;
   }
@@ -221,6 +224,20 @@ background: #0E121B;
   }
   p {
     color: #CACFD8;
+  }
+  .open {
+    background-color: #232530;
+  }
+  .notes > span {
+    color: #E0E4EA;
+  }
+  .create-container {
+    background: #0E121B;
+    border-right-color: #2B303B;
+  }
+  .notes-list > p {
+    background: inherit;
+    /* border: 0; */
   }
 
 }

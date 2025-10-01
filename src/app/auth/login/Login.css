@@ -179,4 +179,9 @@ hr {
   .login-container {
     max-width: 540px;
   }
+  .login-form {
+    input[type="email"]:focus, input[type="password"]:focus {
+      border-color: #4762ce;
+    }
+  }
 }

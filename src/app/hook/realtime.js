@@ -1,62 +1,39 @@
 "use client"
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { createClient } from "../utils/supabase/client";
 
-export default function useNotesRealtime({ setNotes, initialNotes = [], sortFn = (a,b) => b.created_at.localeCompare(a.created_at) }) {
-  const channelRef = useRef(null);
+export default function useNotesRealtime({ setNotes }) {
   const supabase = createClient();
-  useEffect(() => {
-    // initialize notes state if needed
-    setNotes((prev) => (prev.length ? prev : initialNotes.sort(sortFn)));
 
-    // create channel
+  useEffect(() => {
+    // channel oluştur
     const channel = supabase
       .channel("notes-changes")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "notes" },
         (payload) => {
-          setNotes((prevNotes) => {
-            // normalize payload for easier handling
-            const evt = payload.eventType;
-            const newRow = payload.new ?? null;
-            const oldRow = payload.old ?? null;
+          console.log("Realtime payload:", payload);
+          const evt = payload.eventType;
 
-            if (evt === "INSERT" && newRow) {
-              // avoid duplicates
-              if (prevNotes.some((n) => n.id === newRow.id)) return prevNotes;
-              const next = [newRow, ...prevNotes];
-              return next.sort(sortFn);
-            }
+          if (evt === "INSERT" && payload.new) {
+            setNotes(prev => [...prev, payload.new]);
+          }
 
-            if (evt === "UPDATE" && newRow) {
-              const exists = prevNotes.some((n) => n.id === newRow.id);
-              const next = exists
-                ? prevNotes.map((n) => (n.id === newRow.id ? newRow : n))
-                : [newRow, ...prevNotes];
-              return next.sort(sortFn);
-            }
+          if (evt === "UPDATE" && payload.new) {
+            setNotes(prev => prev.map(n => n.id === payload.new.id ? payload.new : n));
+          }
 
-            if (evt === "DELETE" && oldRow) {
-              return prevNotes.filter((n) => n.id !== oldRow.id);
-            }
-
-            return prevNotes;
-          });
+          if (evt === "DELETE" && payload.old) {
+            setNotes(prev => prev.filter(n => n.id !== payload.old.id));
+          }
         }
       )
       .subscribe();
 
-    channelRef.current = channel;
-
-    // cleanup on unmount
+    // cleanup: component unmount olduğunda channel’i kaldır
     return () => {
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
-        channelRef.current = null;
-      }
+      supabase.removeChannel(channel);
     };
-  }, [setNotes, initialNotes, sortFn]);
-
-  return { channelRef };
+  }, [setNotes]); // sadece mount ve setNotes değişirse çalışır
 }
