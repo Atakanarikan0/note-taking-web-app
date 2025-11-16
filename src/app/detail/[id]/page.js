@@ -1,5 +1,8 @@
 import NoteDetail from "./noteDetail"
 
-export default  function Page({ params }) {
-  return <NoteDetail noteId={params.id} />
+export default async function Page({ params }) {
+
+  const { id } = await params;
+
+  return <NoteDetail noteId={id} />;
 }

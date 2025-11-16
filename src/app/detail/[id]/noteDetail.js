@@ -17,6 +17,7 @@ export default function NoteDetail({ noteId }) {
   const archiveRef = useRef(null);
 
   useEffect(() => {
+    if (!noteId) return;
     async function getPostDetail() {
       const supabase = await createClient();
       const { data, error } = await supabase.from("notes").select("*").eq("id", noteId).single();
@@ -30,7 +31,8 @@ export default function NoteDetail({ noteId }) {
     getPostDetail()
   }, [noteId])
 
-  const note = notes.find(n => n.id === noteId);
+  const note = notes.find(n => n.id === Number(noteId));
+
   if (!note) return;
   function handleCancel(e) {
     e.preventDefault();
