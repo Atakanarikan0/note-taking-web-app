@@ -89,14 +89,12 @@ export default function Home() {
             }
           })
           .on('system', { event: 'connected' }, () => {
-            setLoading(false);
           })
           .subscribe((status) => {
           });
 
       } catch (error) {
         console.error(error);
-        setLoading(false);
       }
     }
 
@@ -130,12 +128,12 @@ export default function Home() {
         console.log("🧹 Channel removed");
       }
     };
-  }, [setNotes, setLoading]);
+  }, [setNotes]);
 
   // Loading timeout
   useEffect(() => {
     if (loading) {
-      const timer = setTimeout(() => setLoading(false), 7000);
+      const timer = setTimeout(() => setLoading(false), 3000);
       return () => clearTimeout(timer);
     }
   }, [loading]);

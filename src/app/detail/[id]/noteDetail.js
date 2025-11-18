@@ -181,6 +181,13 @@ export default function NoteDetail({ noteId }) {
                   <h6 className="h6">Tags</h6>
                   <input type="text" name='tags' readOnly value={note?.tags} />
                 </div>
+                {note.archived &&
+                  <div className="note-input">
+                    <img src="/img/status-icon.svg" alt="Status" />
+                    <h6 className="h6">Status</h6>
+                    <input type="text" readOnly value={"Archived"} />
+                  </div>
+                }
                 <div className="note-input">
                   <img src="/img/clock-icon.svg" alt="clock icon" />
                   <h6 className="h6">Last edited</h6>
